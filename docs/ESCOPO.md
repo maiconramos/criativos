@@ -7,11 +7,31 @@
 ## 1. Visão & Posicionamento
 
 **One-liner provisório (a refinar):**
-> Template engine de geração visual, agent-first, self-hosted — para criadores que querem que seus agentes (Claude Code, Antigravity, Cursor) executem fluxos de imagem/vídeo previamente configurados.
+> Template engine de geração visual, agent-first e API-first, self-hosted — para criadores que querem que seus agentes (Claude Code, Antigravity, Cursor) executem fluxos de imagem/vídeo previamente configurados.
 
 **Categoria:** "n8n / ComfyUI para a era dos agentes."
 
 **Por que existe:** Hoje, quem gera criativo com IA repete o mesmo prompt+inputs N vezes em ChatGPT/Gemini. Templates persistidos + execução via agente eliminam esse retrabalho.
+
+### Tese estratégica de fundo
+
+> **SaaS conversacional está sendo substituído por skills/tools dentro de agentes (Claude Code, OpenWebUI, Cursor, Antigravity).** Não faz mais sentido construir mais um app que compete por atenção humana — a tendência é construir as ferramentas que o agente chama.
+
+**Posicionamento:** não competir com Anthropic/OpenAI no agente. Ser a ferramenta que o agente chama.
+
+**Risco aceito:** estar 6–12 meses à frente do mainstream — o curso vira veículo de evangelização, não só de instalação.
+
+### Visão de ecossistema (médio/longo prazo)
+
+Três produtos do mesmo autor, todos compartilhando convenções (CLI, MCP, API, self-host):
+
+| Produto | Função | Status |
+|---|---|---|
+| **Criativos** (este projeto) | Geração de imagem/vídeo via agente | Em construção |
+| **Multipost** (já em produção) | Publicação em redes sociais via agente | OSS + curso ativo |
+| **Futuros** | Outras peças de produção de conteúdo BR | Roadmap mental |
+
+Cada produto tem CLI próprio, MCP server próprio, API REST própria — mas **padrões unificados** (auth, deploy, naming). Agente do usuário pluga em todos.
 
 **Referências de modelo:** n8n, Chatwoot, OpenWebUI, Multipost (próprio autor), ShipFast/IndieKit (boilerplate).
 
@@ -55,6 +75,8 @@
 | Distribuição | Cloud-only via Docker Compose | Agente precisa de instância sempre-online |
 | Linguagem | TypeScript | Boilerplate é TS, MCP precisa de tipos, escala melhor |
 | Esqueleto | Boilerplate IndieKit.pro | Já tem auth, multi-tenant, Stripe; acelera meses |
+| **Arquitetura de interfaces** | **Core engine (TS lib) + adapters finos (HTTP/MCP/CLI/UI)** | **Evita reimplementar lógica 3x; mantém sync entre interfaces** |
+| **Interfaces oficiais** | **HTTP REST + MCP + CLI + Web UI** | **API-first, Agent-first, CLI-first — todos consomem o mesmo core** |
 | Auth MCP | Bearer token | Padrão da indústria, baixa fricção |
 | MCP transport | HTTP/SSE | Stdio não funciona em cloud |
 | Keys de provider | BYO (do usuário) | Self-hosted, sem custo de IA pro autor |
@@ -90,8 +112,17 @@
 
 ## 7. O Que Será Construído do Zero
 
-- **MCP Server** (HTTP/SSE com bearer auth)
+- **Core Engine (TS library)** — lógica de execução de template, isolada de qualquer interface
+  - Pode ser importada como pacote, chamada por adapters HTTP/MCP/CLI/UI
+  - Sem dependência de Next/Express/etc; pura função de negócio
+- **HTTP REST API** (adapter) — endpoints públicos para uso programático direto
+  - Auth: bearer token
+  - Documentada (OpenAPI?)
+- **MCP Server** (adapter) — HTTP/SSE com bearer auth
   - Tools: `list_templates`, `get_template_schema`, `run_template`, `list_providers`
+- **CLI** (adapter) — npx-style, mesma auth/endpoint
+  - Comandos: `templates list`, `templates run <name> --input ...`, `providers list`
+  - Pra automação local e scripts
 - **Provider Abstraction Layer**
   - Camada lógica (nome canônico de modelo)
   - Camada física (mapeamento pra provider concreto)
@@ -195,3 +226,7 @@
 | 2026-05-13 | Cinema/LipSync/Agent studios morrem | Fora do escopo de anúncio |
 | 2026-05-13 | Multi-provider (Fal + Replicate); Muapi vira opcional | Remover lock-in é diferencial central |
 | 2026-05-13 | Stack generator paywall do curso (R$197) | Playbook validado por Multipost / OpenWebUI |
+| 2026-05-13 | Arquitetura: core engine + adapters (HTTP/MCP/CLI/UI) | Evita reimplementar lógica em cada interface; mantém sync |
+| 2026-05-13 | API-first + Agent-first + CLI-first como princípios oficiais | Produto deve ser consumível por agente, script ou humano com mesma fluidez |
+| 2026-05-13 | Visão de ecossistema (Criativos + Multipost + futuros) com convenções unificadas | Cada produto reforça os outros; agente do usuário pluga em todos |
+| 2026-05-13 | Aceito risco de "à frente do tempo" (6–12 meses) | Curso vira evangelização; moat por antecipação da curva |
