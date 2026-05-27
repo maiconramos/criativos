@@ -127,12 +127,22 @@ Cada produto tem CLI próprio, MCP server próprio, API REST própria — mas **
   - Camada lógica (nome canônico de modelo)
   - Camada física (mapeamento pra provider concreto)
   - Suporte inicial: Fal, Replicate
+  - **Catálogo dinâmico (sync com providers), não hardcoded** — protege contra obsolescência de modelos
 - **Template Engine**
-  - Template = Workflow + Input Schema + Output Contract
-  - Versionamento (modelo mudou → marca template como broken/fallback)
+  - Template = Workflow + Input Schema + Output Contract + **Brand Profile opcional**
+  - **Templates encodam INTENT, não sequência fixa** — resiste a modelos unificados (Sora/Veo/Omni)
+  - Versionamento obrigatório; cada run referencia versão exata (reproducibilidade)
+  - Modelo deprecated → template marcado como broken + sugestão de substituto automática
   - Export/import JSON pra portabilidade
+  - **Export como Claude Skill / OpenAI Tool** — fica camada de autoria, não refém de runtime
+- **Brand/Style Profile** (workspace-level)
+  - Cores, fontes, referências visuais, tom
+  - Templates podem referenciar; quando modelos unificados chegarem, vira input nativo
+- **Cost Tracking + Budgets** (desde dia 1, não feature avançada)
+  - Cada execução loga custo real do provider
+  - Workspace pode setar budget mensal
 - **Auth + Workspace** (single workspace, multi-user opcional, sem orgs)
-- **Database schema** (templates, runs, users, api_keys, assets)
+- **Database schema** (templates, runs, users, api_keys, assets, brand_profiles, cost_log)
 - **Stack Generator** (produto separado, paywall do curso)
 - **Instância demo pública** (sandbox limitado, hospedado pelo autor)
 
@@ -197,6 +207,46 @@ Cada produto tem CLI próprio, MCP server próprio, API REST própria — mas **
 - [ ] Demo pública: arquitetura (rate-limit, sandbox, custo)
 - [ ] Templates seed: prompts/parâmetros concretos
 - [ ] Conteúdo detalhado do curso (módulos)
+
+---
+
+## 12.5. Análise de Durabilidade (1–3 anos)
+
+> Estudo realizado para evitar construir um "Antigravity" (apostar no paradigma atual contra a curva) em vez de um "Codex" (alinhar com a direção da curva).
+
+### Princípio orientador
+Você já decidiu Codex-style (agent-first). O risco é a **execução** trair a decisão — investir UI rica no que o agente vai operar sozinho.
+
+### O que vai morrer (não investir muito)
+1. **Prompt engineering como skill explícita** — modelos seguem instrução simples em 2 anos
+2. **Workflow visual como surface primária de criação** — vira debug/inspection, não criação
+3. **Pipelines multi-step explícitos** — modelos unificados (Sora 2, Veo 3, Gemini Omni) fazem em 1 shot
+4. **Parameter UIs ricas por modelo** — agente seleciona parâmetros sozinho
+5. **Catálogos hardcoded de modelos** — zoológico de obsoletos; precisa ser dinâmico
+
+### O que sobrevive (investir)
+1. **Template como primitiva de API** (`run_template(name, inputs)`) — durável como função em programação
+2. **Provider abstraction** — fragmentação de IA é estrutural; fallback pra outage durável mesmo em winner-take-all
+3. **Asset management + observabilidade** — agentes geram 100x mais conteúdo, organização vira crítica
+4. **Brand/style memory** — empresas querem conteúdo "delas"; templates como memória de estilo sobrevivem
+5. **Self-host como modelo cultural** — movimento decadal (n8n, supabase), não modal
+6. **MCP/agent-callable como primitiva** — protocolo muda, primitiva fica
+7. **Vertical + idioma (anúncio BR)** — genérico sempre perde pra vertical na vertical específica
+
+### O risco mais real
+> "Agentes ficam tão bons que usuário pede tudo no momento — por que template persistido?"
+
+**Resposta:** consistência. Pedir 10 variações no momento dá 10 estilos. Template = mesma identidade em 10k execuções. Necessidade só cresce com volume.
+
+**Implicação de marketing:** narrativa precisa ser "sua marca em 10 mil execuções", não "ferramenta legal de IA".
+
+### Ajustes de design já incorporados (ver seção 7)
+- Template editor minimal viable; investimento de UI vai pra **execution viewer/observability**
+- Catálogo de modelos dinâmico
+- Templates encodam **intent**, não sequência
+- Brand profile no workspace desde dia 1
+- Cost tracking desde dia 1
+- Templates exportáveis como Claude Skill / OpenAI Tool (vira layer de autoria)
 
 ---
 
@@ -275,3 +325,10 @@ Ninguém combina:
 | 2026-05-13 | Aceito risco de "à frente do tempo" (6–12 meses) | Curso vira evangelização; moat por antecipação da curva |
 | 2026-05-13 | Posicionamento confirmado por análise competitiva | Espaço "self-host + template persistido + MCP + multi-provider + vertical anúncio + BR" está vazio |
 | 2026-05-13 | Janela de 12–18 meses é restrição real | MVP em 3–4 meses é prioritário antes que Comfy/Krea fechem gaps |
+| 2026-05-13 | Template editor minimal viable; UI rica vai pra execution viewer | Visual builder vira debug em 2 anos; observability é durável |
+| 2026-05-13 | Catálogo de modelos dinâmico (sync providers), não hardcoded | Protege contra obsolescência rápida do espaço |
+| 2026-05-13 | Templates encodam INTENT, não sequência fixa | Resiste a modelos unificados (Sora/Veo/Omni) |
+| 2026-05-13 | Brand profile + cost tracking desde dia 1 | Higiene básica de produto agent-callable; brand é primitiva durável |
+| 2026-05-13 | Templates exportáveis como Claude Skill / OpenAI Tool | Vira layer de autoria, não refém de runtime que pode mudar |
+| 2026-05-13 | Versionamento de templates obrigatório (não opcional) | Reproducibilidade é exigência de uso por agente |
+| 2026-05-13 | Narrativa de marketing focada em "consistência em volume" | Defende contra "agente faz tudo no momento" — o problema real é consistência, não dificuldade |
