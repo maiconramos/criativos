@@ -210,10 +210,53 @@ Cada produto tem CLI próprio, MCP server próprio, API REST própria — mas **
 | Multi-provider quebra templates entre instâncias | Camada lógica/física separada desde o dia 1 |
 | Divergência do projeto original (Anil Matcha) | Aceito — projeto bifurca de vez, sem upstream |
 | Personas conflitantes diluem produto | Foco MVP só em criativo de anúncio (Victor) |
+| **Comfy Cloud MCP fechar o gap (saved workflows by ID)** | **Janela 12–18 meses; MVP em 3–4 meses é prioritário** |
+| **Krea AI já tem Nodes+Agent** | **Diferenciador é a combinação 4-pilares + vertical + BR; não feature isolada** |
+| **Freepik/Magnific lançar API agent-friendly sobre Spaces** | **Capital deles é alto; ataque o nicho vertical+BR onde eles não vão** |
 
 ---
 
-## 14. Log de Decisões
+## 14. Análise Competitiva (síntese)
+
+> Pesquisa completa salva em conversa. Documento vivo — atualizar quando concorrentes mudam.
+
+### Smoking gun confirmado
+**ComfyUI MCP** (o mais maduro do espaço) tem limitação documentada explicitamente:
+> *"Workflows não podem ser executados por ID salvo — agente reconstrói do zero a cada vez"*
+
+Isso é literalmente o que o template engine persistido resolve. Argumento de marketing direto.
+
+### Posição única (4 pilares + vertical + BR)
+Ninguém combina:
+1. Self-host (Docker)
+2. Template persistido (callable por agente por ID/nome)
+3. MCP nativo (não wrapper de provedor)
+4. Multi-provider abstrato
+5. Vertical anúncio
+6. BR-first
+
+### Concorrentes mais perigosos (em ordem)
+1. **Krea AI** — já tem Nodes + Nodes Agent. SaaS fechado, sem MCP/self-host/BYO-key/BR. Risco de feature parity.
+2. **Comfy Cloud (oficial)** — tem MCP maduro, vai fechar o gap de saved workflows. 12–18 meses.
+3. **Freepik/Magnific Spaces** — visível, capital alto, mas sem agente/API friendly hoje.
+4. **InvokeAI** — único OSS sério com workflow editor. Sem MCP. Pode ganhar via comunidade.
+
+### Categorias mapeadas
+- **Flow/Workflow SaaS:** Magnific/Spaces, Krea, Leonardo Elements, Flora, Segmind Pixelflow, Recraft
+- **Workflow OSS:** ComfyUI (+ Comfy Cloud, RunComfy, ComfyDeploy), InvokeAI, Fooocus
+- **Vertical anúncio SaaS:** AdCreative.ai ($39+), Pencil, Predis, Omneky, Smartly.io, Canva Magic, Adobe Firefly, Creatify, Arcads
+- **Template-API estático (não generativo):** Bannerbear, Placid, Abyssale, Templated.io, Orshot (único com BYO-key)
+- **Provider layer:** Replicate, Fal.ai, Runware (cost leader), Together, Muapi, WaveSpeedAI
+- **MCPs existentes:** mcp-replicate, mcp-fal, comfy-cloud-mcp, comfyui-mcp (artokun), mcp-fooocus-api
+
+### Mercado BR
+- **Vazio.** Nenhum SaaS BR estabelecido na categoria.
+- Hotmart vende "Agentes de IA" como infoproduto = sinal de demanda madura.
+- Cursos BR de ComfyUI existem (Udemy, Domestika); ninguém combina tool+curso+comunidade vertical anúncio.
+
+---
+
+## 15. Log de Decisões
 
 | Data | Decisão | Razão |
 |---|---|---|
@@ -230,3 +273,5 @@ Cada produto tem CLI próprio, MCP server próprio, API REST própria — mas **
 | 2026-05-13 | API-first + Agent-first + CLI-first como princípios oficiais | Produto deve ser consumível por agente, script ou humano com mesma fluidez |
 | 2026-05-13 | Visão de ecossistema (Criativos + Multipost + futuros) com convenções unificadas | Cada produto reforça os outros; agente do usuário pluga em todos |
 | 2026-05-13 | Aceito risco de "à frente do tempo" (6–12 meses) | Curso vira evangelização; moat por antecipação da curva |
+| 2026-05-13 | Posicionamento confirmado por análise competitiva | Espaço "self-host + template persistido + MCP + multi-provider + vertical anúncio + BR" está vazio |
+| 2026-05-13 | Janela de 12–18 meses é restrição real | MVP em 3–4 meses é prioritário antes que Comfy/Krea fechem gaps |
